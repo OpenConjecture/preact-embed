@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/user/preact-embed/main/assets/logo.svg" alt="preact-embed" width="400" />
+  <img src="./logo.svg" alt="preact-embed" width="400" />
 </p>
 
 <h1 align="center">preact-embed</h1>
