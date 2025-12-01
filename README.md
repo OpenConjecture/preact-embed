@@ -2,8 +2,6 @@
   <img src="./banner.svg" alt="preact-embed" width="600" />
 </p>
 
-<h1 align="center">preact-embed</h1>
-
 <p align="center">
   <strong>🚀 Ship Preact micro-components anywhere. Zero config. Under 1KB.</strong>
 </p>
