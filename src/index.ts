@@ -12,7 +12,7 @@
  * - Cleanup/unmount capabilities
  */
 
-import { h, render, hydrate, ComponentType, VNode, ComponentChildren } from 'preact';
+import { h, render, hydrate, ComponentType, VNode } from 'preact';
 
 // ============================================================================
 // Types
@@ -170,7 +170,7 @@ function collectProps<P extends object>(
 /**
  * Find all host elements based on options
  */
-function findHostElements(options: HabitatOptions): Element[] {
+function findHostElements<P extends object = {}>(options: HabitatOptions<P>): Element[] {
   const { selector, inline, clientSpecified } = options;
   const elements: Element[] = [];
 
@@ -202,7 +202,7 @@ const HABITAT_KEY = Symbol('preact-habitat');
 
 interface HabitatMeta {
   root: Element | ShadowRoot;
-  vnode: VNode | null;
+  vnode: VNode<{}> | null;
   unmount: () => void;
 }
 
@@ -332,7 +332,7 @@ export function habitat<P extends object = {}>(
     };
 
     // Store metadata
-    setHabitatMeta(element, { root, vnode, unmount });
+    setHabitatMeta(element, { root, vnode: vnode as VNode<{}>, unmount });
 
     // Create instance
     const instance: WidgetInstance<P> = {

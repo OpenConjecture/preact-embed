@@ -19,6 +19,6 @@ export default defineConfig({
     options.jsxImportSource = 'preact';
   },
   banner: {
-    js: '/* preact-habitat-modern | MIT License */',
+    js: '/* preact-embed | MIT License */',
   },
 });

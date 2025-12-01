@@ -161,6 +161,9 @@ export {
   useSignal,
   useComputed,
   useSignalEffect,
+};
+
+export type {
   Signal,
   ReadonlySignal,
 };

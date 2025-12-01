@@ -1,5 +1,5 @@
 {
-  "name": "preact-habitat-modern",
+  "name": "preact-embed",
   "version": "1.0.0",
   "description": "Modern, lightweight framework for embedding Preact micro-components anywhere in the DOM",
   "type": "module",
@@ -61,11 +61,11 @@
     "shadow-dom",
     "lightweight"
   ],
-  "author": "",
+  "author": "Garrett Eastham",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/OpenConjecture/preact-embed.git"
   },
   "peerDependencies": {
     "preact": ">=10.0.0"
