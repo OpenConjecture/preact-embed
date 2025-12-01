@@ -1,0 +1,82 @@
+{
+  "name": "preact-habitat-modern",
+  "version": "1.0.0",
+  "description": "Modern, lightweight framework for embedding Preact micro-components anywhere in the DOM",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./signals": {
+      "import": {
+        "types": "./dist/signals.d.ts",
+        "default": "./dist/signals.js"
+      },
+      "require": {
+        "types": "./dist/signals.d.cts",
+        "default": "./dist/signals.cjs"
+      }
+    },
+    "./lite": {
+      "import": {
+        "types": "./dist/lite.d.ts",
+        "default": "./dist/lite.js"
+      },
+      "require": {
+        "types": "./dist/lite.d.cts",
+        "default": "./dist/lite.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "preact",
+    "widget",
+    "embed",
+    "micro-frontend",
+    "web-component",
+    "shadow-dom",
+    "lightweight"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "peerDependencies": {
+    "preact": ">=10.0.0"
+  },
+  "devDependencies": {
+    "@preact/signals": "^1.2.2",
+    "@types/node": "^20.10.0",
+    "preact": "^10.19.3",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4"
+  },
+  "sideEffects": false
+}

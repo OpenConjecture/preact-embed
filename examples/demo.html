@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preact Habitat Modern - Demo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: #f5f5f5;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    h2 {
+      color: #555;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 8px;
+      margin-top: 40px;
+    }
+
+    .demo-section {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      margin: 20px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .widget-container {
+      display: inline-block;
+      margin: 10px;
+    }
+
+    .widgets-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    pre {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 14px;
+    }
+
+    code {
+      font-family: 'Fira Code', 'Consolas', monospace;
+    }
+
+    .spacer {
+      height: 800px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 1.5rem;
+    }
+
+    .note {
+      background: #fff3cd;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border-left: 4px solid #ffc107;
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏠 Preact Habitat Modern</h1>
+  <p style="text-align: center; color: #666;">
+    Lightweight, modern framework for embedding Preact micro-components anywhere
+  </p>
+
+  <!-- ====================================================================== -->
+  <!-- Basic Usage -->
+  <!-- ====================================================================== -->
+  <h2>1. Basic Usage</h2>
+  <div class="demo-section">
+    <p>Mount a widget using a CSS selector and pass props via data attributes:</p>
+    
+    <div class="widgets-row">
+      <!-- Widget with data-prop attributes -->
+      <div class="widget-container">
+        <div 
+          data-widget="counter"
+          data-prop-title="My Counter"
+          data-prop-initial-count="10"
+          data-prop-step="5"
+        ></div>
+      </div>
+
+      <!-- Widget with JSON props -->
+      <div class="widget-container">
+        <div data-widget="counter">
+          <script type="application/json">
+            {
+              "title": "JSON Props Counter",
+              "initialCount": 100,
+              "step": 10,
+              "theme": "dark"
+            }
+          </script>
+        </div>
+      </div>
+    </div>
+
+    <pre><code>&lt;div 
+  data-widget="counter"
+  data-prop-title="My Counter"
+  data-prop-initial-count="10"
+  data-prop-step="5"
+&gt;&lt;/div&gt;
+
+&lt;!-- Or with JSON props --&gt;
+&lt;div data-widget="counter"&gt;
+  &lt;script type="application/json"&gt;
+    { "title": "JSON Props", "initialCount": 100 }
+  &lt;/script&gt;
+&lt;/div&gt;</code></pre>
+  </div>
+
+  <!-- ====================================================================== -->
+  <!-- Shadow DOM Isolation -->
+  <!-- ====================================================================== -->
+  <h2>2. Shadow DOM Isolation</h2>
+  <div class="demo-section">
+    <p>Widgets can be isolated using Shadow DOM to prevent CSS conflicts:</p>
+    
+    <div class="widgets-row">
+      <div class="widget-container">
+        <div 
+          data-widget="counter-isolated"
+          data-prop-title="Isolated Widget"
+          data-prop-initial-count="0"
+        ></div>
+      </div>
+    </div>
+
+    <div class="note">
+      ⚡ This widget uses Shadow DOM - its styles won't leak out or be affected by page styles.
+    </div>
+
+    <pre><code>render({
+  selector: '[data-widget="counter-isolated"]',
+  shadowRoot: true,  // or { mode: 'closed' }
+});</code></pre>
+  </div>
+
+  <!-- ====================================================================== -->
+  <!-- Cross-Widget Communication -->
+  <!-- ====================================================================== -->
+  <h2>3. Cross-Widget Communication</h2>
+  <div class="demo-section">
+    <p>Widgets can communicate via an event bus. These counters are synced:</p>
+    
+    <div class="widgets-row">
+      <div class="widget-container">
+        <div 
+          data-widget="counter"
+          data-prop-title="Counter A"
+          data-prop-broadcast-channel="sync-group"
+        ></div>
+      </div>
+      
+      <div class="widget-container">
+        <div 
+          data-widget="counter"
+          data-prop-title="Counter B"
+          data-prop-broadcast-channel="sync-group"
+        ></div>
+      </div>
+      
+      <div class="widget-container">
+        <div 
+          data-widget="counter"
+          data-prop-title="Counter C (Independent)"
+        ></div>
+      </div>
+    </div>
+
+    <pre><code>// In your widget:
+import { eventBus, useHabitatEvent } from 'preact-habitat-modern';
+
+// Emit events
+eventBus.emit('counter:sync-group', newCount);
+
+// Listen for events
+const [count] = useHabitatEvent('counter:sync-group');</code></pre>
+  </div>
+
+  <!-- ====================================================================== -->
+  <!-- Lazy Loading -->
+  <!-- ====================================================================== -->
+  <h2>4. Lazy Loading</h2>
+  <div class="demo-section">
+    <p>Widgets below the fold can be lazy-loaded using Intersection Observer:</p>
+    
+    <div class="spacer">
+      ⬇️ Scroll down to see lazy-loaded widget ⬇️
+    </div>
+    
+    <div class="widgets-row">
+      <div class="widget-container">
+        <div 
+          data-widget="counter-lazy"
+          data-prop-title="Lazy Loaded!"
+          data-prop-theme="dark"
+        >
+          <div style="padding: 40px; background: #eee; border-radius: 8px;">
+            Loading widget...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <pre><code>render({
+  selector: '[data-widget="counter-lazy"]',
+  lazy: true,  // or { threshold: 0.5, rootMargin: '100px' }
+  clean: true, // Remove "Loading..." placeholder
+});</code></pre>
+  </div>
+
+  <!-- ====================================================================== -->
+  <!-- Custom Elements -->
+  <!-- ====================================================================== -->
+  <h2>5. Custom Elements (Web Components)</h2>
+  <div class="demo-section">
+    <p>Register widgets as native Web Components:</p>
+    
+    <div class="widgets-row">
+      <div class="widget-container">
+        <!-- This works after registering the custom element -->
+        <counter-widget 
+          title="Web Component Counter"
+          initial-count="42"
+        ></counter-widget>
+      </div>
+    </div>
+
+    <pre><code>// Registration
+render({ tagName: 'counter-widget', shadowRoot: true });
+
+// Usage in HTML
+&lt;counter-widget 
+  title="Web Component Counter"
+  initial-count="42"
+&gt;&lt;/counter-widget&gt;</code></pre>
+  </div>
+
+  <!-- ====================================================================== -->
+  <!-- API Reference -->
+  <!-- ====================================================================== -->
+  <h2>API Quick Reference</h2>
+  <div class="demo-section">
+    <pre><code>import habitat from 'preact-habitat-modern';
+import { MyWidget } from './MyWidget';
+
+const { render, renderOne, unmountAll, instances } = habitat(MyWidget);
+
+// Render to all matching elements
+render({
+  selector: '.my-widget',
+  defaultProps: { theme: 'dark' },
+  shadowRoot: true,
+  lazy: true,
+  clean: true,
+  onMounted: (el, props) => console.log('Mounted!'),
+  onUnmount: (el) => console.log('Unmounted'),
+});
+
+// Render to a single element
+const instance = renderOne(document.getElementById('widget'), { title: 'Hello' });
+
+// Update an instance
+instance.update({ title: 'New Title' });
+
+// Unmount an instance
+instance.unmount();
+
+// Unmount all
+unmountAll();</code></pre>
+  </div>
+
+  <!-- Load the widget bundle -->
+  <script type="module">
+    // In a real app, this would be your built widget bundle
+    // For demo purposes, we're using inline code
+
+    import { h, render } from 'https://esm.sh/preact@10.19.3';
+    import { useState, useEffect } from 'https://esm.sh/preact@10.19.3/hooks';
+
+    // Simple event bus
+    const eventBus = {
+      events: new Map(),
+      on(event, callback) {
+        if (!this.events.has(event)) this.events.set(event, new Set());
+        this.events.get(event).add(callback);
+        return () => this.off(event, callback);
+      },
+      off(event, callback) {
+        this.events.get(event)?.delete(callback);
+      },
+      emit(event, data) {
+        this.events.get(event)?.forEach(cb => cb(data));
+      }
+    };
+
+    // Counter Widget
+    function CounterWidget({ title = 'Counter', initialCount = 0, step = 1, theme = 'light', broadcastChannel }) {
+      const [count, setCount] = useState(initialCount);
+
+      useEffect(() => {
+        if (!broadcastChannel) return;
+        return eventBus.on(`counter:${broadcastChannel}`, setCount);
+      }, [broadcastChannel]);
+
+      const update = (delta) => {
+        const newCount = count + delta;
+        setCount(newCount);
+        if (broadcastChannel) eventBus.emit(`counter:${broadcastChannel}`, newCount);
+      };
+
+      const isDark = theme === 'dark';
+      return h('div', {
+        style: {
+          fontFamily: 'system-ui',
+          padding: '20px',
+          borderRadius: '8px',
+          background: isDark ? '#1a1a2e' : '#fff',
+          color: isDark ? '#eee' : '#333',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+          textAlign: 'center',
+        }
+      }, [
+        h('h3', { style: { margin: '0 0 16px' } }, title),
+        h('div', { style: { fontSize: '3rem', fontWeight: 'bold', margin: '16px 0' } }, count),
+        h('div', { style: { display: 'flex', gap: '8px', justifyContent: 'center' } }, [
+          h('button', {
+            onClick: () => update(-step),
+            style: { padding: '8px 24px', fontSize: '1.25rem', border: 'none', borderRadius: '4px', cursor: 'pointer', background: isDark ? '#4a4a6a' : '#007bff', color: '#fff' }
+          }, '−'),
+          h('button', {
+            onClick: () => update(step),
+            style: { padding: '8px 24px', fontSize: '1.25rem', border: 'none', borderRadius: '4px', cursor: 'pointer', background: isDark ? '#4a4a6a' : '#007bff', color: '#fff' }
+          }, '+'),
+        ])
+      ]);
+    }
+
+    // Simple habitat implementation for demo
+    function camelCase(str) {
+      return str.replace(/-([a-z])/gi, (_, l) => l.toUpperCase());
+    }
+
+    function getProps(el, defaults = {}) {
+      const props = { ...defaults };
+      
+      // From data-prop-* attributes
+      for (const attr of el.attributes) {
+        if (attr.name.startsWith('data-prop-')) {
+          let name = camelCase(attr.name.slice(10));
+          let val = attr.value;
+          if (val === 'true') val = true;
+          else if (val === 'false') val = false;
+          else if (!isNaN(Number(val)) && val !== '') val = Number(val);
+          props[name] = val;
+        }
+      }
+
+      // From JSON script
+      const script = el.querySelector('script[type="application/json"]');
+      if (script) {
+        try {
+          Object.assign(props, JSON.parse(script.textContent));
+        } catch {}
+      }
+
+      return props;
+    }
+
+    // Mount widgets
+    document.querySelectorAll('[data-widget="counter"]').forEach(el => {
+      const props = getProps(el);
+      render(h(CounterWidget, props), el);
+    });
+
+    // Shadow DOM widgets
+    document.querySelectorAll('[data-widget="counter-isolated"]').forEach(el => {
+      const props = getProps(el, { theme: 'dark' });
+      const shadow = el.attachShadow({ mode: 'open' });
+      render(h(CounterWidget, props), shadow);
+    });
+
+    // Lazy loaded widgets
+    const lazyObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const props = getProps(el);
+          el.innerHTML = '';
+          render(h(CounterWidget, props), el);
+          lazyObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('[data-widget="counter-lazy"]').forEach(el => {
+      lazyObserver.observe(el);
+    });
+
+    // Custom element
+    class CounterElement extends HTMLElement {
+      connectedCallback() {
+        const shadow = this.attachShadow({ mode: 'open' });
+        const props = {};
+        for (const attr of this.attributes) {
+          props[camelCase(attr.name)] = attr.value;
+        }
+        if (props.initialCount) props.initialCount = Number(props.initialCount);
+        render(h(CounterWidget, props), shadow);
+      }
+    }
+    customElements.define('counter-widget', CounterElement);
+  </script>
+</body>
+</html>
